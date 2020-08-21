@@ -1,5 +1,8 @@
 <?php
 
+    /** @noinspection PhpUnused */
+    /** @noinspection PhpIllegalPsrClassPathInspection */
+
     namespace modules\v1;
 
     use Exception;
@@ -16,7 +19,7 @@
     use TelegramClientManager\TelegramClientManager;
 
     /**
-     * Class get_lydia_session
+     * Class lookup_user
      */
     class lookup_user extends Module implements  Response
     {
@@ -232,7 +235,9 @@
                     "spam_prediction" => [
                         "ham_prediction" => null,
                         "spam_prediction" => null,
-                    ]
+                    ],
+                    "last_updated" => $TargetTelegramClient->LastActivityTimestamp,
+
                 ]
             ];
 
@@ -261,42 +266,103 @@
                         $ResponsePayload["results"]["attributes"]["blacklist_flag"] = $UserStatus->BlacklistFlag;
                         $ResponsePayload["results"]["attributes"]["blacklist_reason"] = self::blacklistFlagToReason($UserStatus->BlacklistFlag);
                         $ResponsePayload["results"]["attributes"]["original_private_id"] = $UserStatus->OriginalPrivateID;
+                    }
 
-                        if($UserStatus->GeneralizedID !== "None" && $UserStatus->GeneralizedID !== null)
+                    if($UserStatus->GeneralizedID !== "None" && $UserStatus->GeneralizedID !== null)
+                    {
+                        if($UserStatus->GeneralizedHam > 0)
                         {
-                            if($UserStatus->GeneralizedHam > 0)
+                            if($UserStatus->GeneralizedSpam > $UserStatus->GeneralizedHam)
                             {
-                                if($UserStatus->GeneralizedSpam > $UserStatus->GeneralizedHam)
-                                {
-                                    $ResponsePayload["results"]["attributes"]["is_potential_spammer"] = true;
-                                }
+                                $ResponsePayload["results"]["attributes"]["is_potential_spammer"] = true;
                             }
                         }
-                    }
-                    else
-                    {
-                        $ResponsePayload["results"]["attributes"]["is_blacklisted"] = false;
                     }
 
                     if($UserStatus->IsOperator)
                     {
-                        $ResponsePayload["results"]["attributes"]["is_operator"] = false;
+                        $ResponsePayload["results"]["attributes"]["is_operator"] = true;
                     }
 
                     if($UserStatus->IsAgent)
                     {
-                        $ResponsePayload["results"]["attributes"]["is_agent"] = false;
+                        $ResponsePayload["results"]["attributes"]["is_agent"] = true;
                     }
 
                     if($UserStatus->IsWhitelisted)
                     {
-                        $ResponsePayload["results"]["attributes"]["is_whitelisted"] = false;
+                        $ResponsePayload["results"]["attributes"]["is_whitelisted"] = true;
                     }
 
                     if($TargetTelegramClient->AccountID !== 0)
                     {
                         $ResponsePayload["results"]["attributes"]["intellivoid_accounts_verified"] = true;
                     }
+                    break;
+
+                case TelegramChatType::Group:
+                case TelegramChatType::SuperGroup:
+
+                    $ChatSettings = SettingsManager::getChatSettings($TargetTelegramClient);
+
+                    if($ChatSettings->LargeLanguageGeneralizedID !== null)
+                    {
+                        $ResponsePayload["results"]["language_prediction"]["language"] = $ChatSettings->GeneralizedLanguage;
+                        $ResponsePayload["results"]["language_prediction"]["probability"] = $ChatSettings->GeneralizedLanguageProbability;
+                    }
+
+                    if($ChatSettings->IsVerified)
+                    {
+                        $ResponsePayload["results"]["attributes"]["is_official"] = true;
+                    }
+
+                    break;
+
+                case TelegramChatType::Channel:
+
+                    $ChannelStatus = SettingsManager::getChannelStatus($TargetTelegramClient);
+
+                    if($ChannelStatus->LargeLanguageGeneralizedID !== null)
+                    {
+                        $ResponsePayload["results"]["language_prediction"]["language"] = $ChannelStatus->GeneralizedLanguage;
+                        $ResponsePayload["results"]["language_prediction"]["probability"] = $ChannelStatus->GeneralizedLanguageProbability;
+                    }
+
+                    if($ChannelStatus->IsOfficial)
+                    {
+                        $ResponsePayload["results"]["attributes"]["is_official"] = true;
+                    }
+
+                    if($ChannelStatus->IsWhitelisted)
+                    {
+                        $ResponsePayload["results"]["attributes"]["is_whitelisted"] = true;
+                    }
+
+                    if($ChannelStatus->IsBlacklisted)
+                    {
+                        $ResponsePayload["results"]["attributes"]["is_blacklisted"] = true;
+                        $ResponsePayload["results"]["attributes"]["blacklist_flag"] = $ChannelStatus->BlacklistFlag;
+                        $ResponsePayload["results"]["attributes"]["blacklist_reason"] = self::blacklistFlagToReason($ChannelStatus->BlacklistFlag);
+                        $ResponsePayload["results"]["attributes"]["original_private_id"] = null;
+                    }
+
+                    if($ChannelStatus->GeneralizedID !== "None" && $ChannelStatus->GeneralizedID !== null)
+                    {
+                        if($ChannelStatus->GeneralizedHam > 0)
+                        {
+                            if($ChannelStatus->GeneralizedSpam > $ChannelStatus->GeneralizedHam)
+                            {
+                                $ResponsePayload["results"]["attributes"]["is_potential_spammer"] = true;
+                            }
+                        }
+                    }
+
+                    if($ChannelStatus->GeneralizedID !== "None" && $ChannelStatus->GeneralizedID !== null)
+                    {
+                        $ResponsePayload["results"]["spam_prediction"]["ham_prediction"] = $ChannelStatus->GeneralizedHam;
+                        $ResponsePayload["results"]["spam_prediction"]["spam_prediction"] = $ChannelStatus->GeneralizedSpam;
+                    }
+
                     break;
 
                 default:
