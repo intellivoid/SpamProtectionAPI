@@ -268,13 +268,16 @@
                         $ResponsePayload["results"]["attributes"]["original_private_id"] = $UserStatus->OriginalPrivateID;
                     }
 
-                    if($UserStatus->GeneralizedID !== "None" && $UserStatus->GeneralizedID !== null)
+                    if($TargetTelegramClient->User->IsBot == false)
                     {
-                        if($UserStatus->GeneralizedHam > 0)
+                        if($UserStatus->GeneralizedID !== "None" && $UserStatus->GeneralizedID !== null)
                         {
-                            if($UserStatus->GeneralizedSpam > $UserStatus->GeneralizedHam)
+                            if($UserStatus->GeneralizedHam > 0)
                             {
-                                $ResponsePayload["results"]["attributes"]["is_potential_spammer"] = true;
+                                if($UserStatus->GeneralizedSpam > $UserStatus->GeneralizedHam)
+                                {
+                                    $ResponsePayload["results"]["attributes"]["is_potential_spammer"] = true;
+                                }
                             }
                         }
                     }
