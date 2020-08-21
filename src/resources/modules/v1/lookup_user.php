@@ -13,6 +13,7 @@
     use TelegramClientManager\Abstracts\SearchMethods\TelegramClientSearchMethod;
     use TelegramClientManager\Abstracts\TelegramChatType;
     use TelegramClientManager\Exceptions\TelegramClientNotFoundException;
+    use TelegramClientManager\TelegramClientManager;
 
     /**
      * Class get_lydia_session
@@ -133,7 +134,7 @@
                 return null;
             }
 
-            $TelegramClientManager = new \TelegramClientManager\TelegramClientManager();
+            $TelegramClientManager = new TelegramClientManager();
             $EstimatedPrivateID = Hashing::telegramClientPublicID((int)$Parameters["query"], (int)$Parameters["query"]);
             $TargetTelegramClient = null;
 
