@@ -297,7 +297,7 @@
                         $ResponsePayload["results"]["attributes"]["is_whitelisted"] = true;
                     }
 
-                    if($TargetTelegramClient->AccountID !== 0)
+                    if($TargetTelegramClient->AccountID !== null && $TargetTelegramClient->AccountID !== 0)
                     {
                         $ResponsePayload["results"]["attributes"]["intellivoid_accounts_verified"] = true;
                     }
@@ -418,7 +418,7 @@
                     return "Scamming";
 
                 case BlacklistFlag::Special:
-                    return "Special Reason, consult @IntellivoidSupport";
+                    return "Special Reason, consult main operators in @SpamProtectionSupport";
 
                 case BlacklistFlag::MassAdding:
                     return "Mass adding users to groups/channels";
