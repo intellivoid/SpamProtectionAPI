@@ -1,0 +1,22 @@
+{
+	"name": "Telegram SpamProtection API",
+	"configuration": {
+		"logging_enabled": true,
+		"root_path": "/spamprotection",
+		"debugging_mode": false,
+		"framework_signature": true,
+		"api_signature": true,
+		"khm_enabled": true,
+		"firewall_deny": [],
+		"headers": {}
+	},
+	"versions": [
+		{
+			"version": "v1",
+			"enabled": true,
+			"methods": [
+				{"methods": ["GET", "POST"], "path": "lookup", "class": "\\Methods\\v1\\LookupUserMethod"}
+			]
+		}
+	]
+}

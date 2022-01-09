@@ -3,13 +3,11 @@
     /** @noinspection PhpUnused */
     /** @noinspection PhpIllegalPsrClassPathInspection */
 
-    namespace modules\v1;
+    namespace Methods\v1;
 
     use Exception;
-    use Handler\Abstracts\Module;
-    use Handler\Handler;
-    use Handler\Interfaces\Response;
     use IntellivoidAPI\Objects\AccessRecord;
+    use KimchiAPI\Abstracts\Method;
     use SpamProtection\Abstracts\BlacklistFlag;
     use SpamProtection\Managers\SettingsManager;
     use SpamProtection\Utilities\Hashing;
@@ -21,7 +19,7 @@
     /**
      * Class lookup_user
      */
-    class lookup_user extends Module implements  Response
+    class LookupUserMethod extends Method
     {
         /**
          * The name of the module
@@ -117,7 +115,7 @@
          * @inheritDoc
          * @throws Exception
          */
-        public function processRequest()
+        public function execute(): \KimchiAPI\Objects\Response
         {
             $Parameters = Handler::getParameters(true, true);
 

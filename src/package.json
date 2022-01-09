@@ -1,0 +1,89 @@
+{
+    "package": {
+        "package_name": "net.intellivoid.spam_protection_api",
+        "name": "SpamProtection API",
+        "version": "1.0.0.0",
+        "author": "Zi Xing Narrakas",
+        "organization": "Intellivoid Technologies",
+        "description": "The Spam Protection API Server",
+        "url": "https://github.com/intellivoid/SpamProtectionAPI",
+        "dependencies": [
+            {
+                "package": "net.intellivoid.kimchi_api",
+                "version": "latest",
+                "source": "default@github/intellivoid/KimchiAPI",
+                "required": true
+            },
+            {
+                "package": "net.intellivoid.api",
+                "version": "latest",
+                "source": "default@github/intellivoid/Intellivoid-API",
+                "required": true
+            },
+            {
+                "package": "net.intellivoid.spam_protection",
+                "version": "latest",
+                "source": "default@github/intellivoid/SpamProtection",
+                "required": true
+            },
+            {
+                "package": "net.intellivoid.telegram_client_manager",
+                "version": "latest",
+                "source": "default@github/intellivoid/IVA-Telegram",
+                "required": true
+            }
+        ],
+        "configuration": {
+            "autoload_method": "generated_spl",
+            "main": null,
+            "post_installation": [],
+            "pre_installation": []
+        }
+    },
+    "components": [
+        {
+            "required": true,
+            "file": "Methods/Classes/Utilities.php"
+        },
+        {
+            "required": true,
+            "file": "Methods/Classes/SubscriptionValidation.php"
+        },
+        {
+            "required": true,
+            "file": "Methods/v1/NsfwClassificationMethod.php"
+        },
+        {
+            "required": true,
+            "file": "Methods/v1/EmotionAnalysisMethod.php"
+        },
+        {
+            "required": true,
+            "file": "Methods/v1/SentenceSplitMethod.php"
+        },
+        {
+            "required": true,
+            "file": "Methods/v1/PosTaggingMethod.php"
+        },
+        {
+            "required": true,
+            "file": "Methods/v1/SentimentAnalysisMethod.php"
+        },
+        {
+            "required": true,
+            "file": "Methods/v1/LanguageDetectionMethod.php"
+        },
+        {
+            "required": true,
+            "file": "Methods/v1/ChatroomSpamPredictionMethod.php"
+        },
+        {
+            "required": true,
+            "file": "Methods/v1/NamedEntityRecognitionMethod.php"
+        }
+    ],
+    "files": [
+        "package.json",
+        "configuration.json"
+    ]
+}
